@@ -1,10 +1,68 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowDown, Sparkle, UploadSimple } from "@phosphor-icons/react";
 import { Reveal } from "@/components/primitives/Reveal";
 import { AnimatedGradientBackground } from "@/components/primitives/AnimatedGradientBackground";
 import { ButtonLink } from "@/components/Button";
+
+/** Example prompts cycled as an animated typed hint inside the (empty)
+ * input — every competitor in this space leads with a prompt box, so it
+ * needs to demonstrate what it does, not just wait passively. Only ever
+ * feeds the native `placeholder` attribute — never overlaid on top of real
+ * typed input — so it disappears the instant the user starts typing. */
+const PROMPT_EXAMPLES = [
+  "A portfolio for a photographer…",
+  "An online store for handmade candles…",
+  "A landing page for a fitness coach…",
+  "A dashboard to track my expenses…",
+];
+
+function useTypedHint(examples: string[], enabled: boolean) {
+  const [text, setText] = useState("");
+
+  useEffect(() => {
+    if (!enabled) return;
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setText(examples[0]);
+      return;
+    }
+
+    let cancelled = false;
+    let exampleIndex = 0;
+    let timeoutId: ReturnType<typeof setTimeout>;
+
+    const type = (charIndex: number) => {
+      if (cancelled) return;
+      const full = examples[exampleIndex];
+      if (charIndex <= full.length) {
+        setText(`${full.slice(0, charIndex)}▍`);
+        timeoutId = setTimeout(() => type(charIndex + 1), 38);
+      } else {
+        timeoutId = setTimeout(() => erase(full.length), 1600);
+      }
+    };
+    const erase = (charIndex: number) => {
+      if (cancelled) return;
+      if (charIndex >= 0) {
+        setText(`${examples[exampleIndex].slice(0, charIndex)}▍`);
+        timeoutId = setTimeout(() => erase(charIndex - 1), 22);
+      } else {
+        exampleIndex = (exampleIndex + 1) % examples.length;
+        timeoutId = setTimeout(() => type(0), 300);
+      }
+    };
+    timeoutId = setTimeout(() => type(0), 500);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timeoutId);
+    };
+  }, [examples, enabled]);
+
+  return enabled ? text : "";
+}
 
 /**
  * Hero, third iteration — a dark, pinned "brand moment" (giant animated
@@ -36,6 +94,7 @@ export function Hero() {
   const [prompt, setPrompt] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const generateHref = `https://www.imagine.art/sites${prompt.trim() ? `?prompt=${encodeURIComponent(prompt.trim())}` : ""}`;
+  const typedHint = useTypedHint(PROMPT_EXAMPLES, prompt.length === 0);
 
   return (
     <>
@@ -50,16 +109,18 @@ export function Hero() {
             style={{ backgroundImage: NOISE_BG }}
           />
 
-          {/* Giant animated-gradient wordmark, cropped by the section edge */}
+          {/* Giant animated-gradient wordmark, cropped by the section edge —
+              kept small and low so the centered prompt box (this domain's
+              highest-attention element) carries the hero, not the wordmark. */}
           <div
             aria-hidden="true"
             className="absolute inset-x-0 bottom-0 flex justify-center pointer-events-none select-none"
-            style={{ transform: "translateY(28%)" }}
+            style={{ transform: "translateY(42%)" }}
           >
             <span
               className="animate-wordmark-shift font-display font-black leading-none"
               style={{
-                fontSize: "26vw",
+                fontSize: "16vw",
                 backgroundImage:
                   "linear-gradient(120deg, var(--color-accent), var(--color-accent-secondary), #f5f0ff, var(--color-accent))",
                 WebkitBackgroundClip: "text",
@@ -72,9 +133,9 @@ export function Hero() {
           </div>
 
           {/* Foreground content */}
-          <div className="relative z-20 container-page h-full flex flex-col">
-            <div className="pt-[130px] md:pt-[150px] flex justify-end">
-              <Reveal className="max-w-[440px] text-right">
+          <div className="relative z-20 container-page h-full flex flex-col pt-[100px] md:pt-[120px] pb-8">
+            <div className="flex-1 flex flex-col items-center justify-center text-center">
+              <Reveal className="w-full max-w-[620px] flex flex-col items-center">
                 <span className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-[7px] text-[13px] font-medium text-white/60 mb-6">
                   <Sparkle size={14} weight="fill" className="text-accent" />
                   Describe it in plain English. Watch it appear in seconds.
@@ -86,15 +147,18 @@ export function Hero() {
                   The AI Website Builder That Builds Everything
                 </h1>
 
-                <div className="mt-6 flex items-center gap-2 rounded-[14px] border border-white/15 bg-white/[0.06] backdrop-blur-md p-2 pl-5 cursor-text" onClick={() => inputRef.current?.focus()}>
-                  <UploadSimple size={18} weight="regular" className="text-white/40 shrink-0" />
+                <div
+                  className="mt-8 w-full flex items-center gap-2.5 rounded-2xl border border-white/20 bg-white/[0.08] backdrop-blur-md shadow-[0_20px_60px_rgba(0,0,0,0.35)] p-3 pl-6 cursor-text transition-colors focus-within:border-white/35"
+                  onClick={() => inputRef.current?.focus()}
+                >
+                  <UploadSimple size={19} weight="regular" className="text-white/40 shrink-0" />
                   <input
                     ref={inputRef}
                     type="text"
                     value={prompt}
                     onChange={(e) => setPrompt(e.target.value)}
-                    placeholder="A portfolio for a photographer…"
-                    className="flex-1 min-w-0 bg-transparent border-0 outline-none text-[14px] text-white placeholder:text-white/30"
+                    placeholder={typedHint || "Describe the site you want to build…"}
+                    className="flex-1 min-w-0 bg-transparent border-0 outline-none text-[15px] text-white placeholder:text-white/35"
                   />
                   <ButtonLink href={generateHref} size="md" variant="brand" className="shrink-0">
                     Generate
@@ -105,7 +169,7 @@ export function Hero() {
             </div>
 
             {/* Studio-style meta strip */}
-            <div className="mt-auto pb-8 flex items-end justify-between">
+            <div className="flex items-end justify-between">
               <p className="font-sans text-[13px] text-white/40 m-0">
                 AI Website Builder <span className="text-white/20 mx-1.5">·</span> Imagine Computer
               </p>
