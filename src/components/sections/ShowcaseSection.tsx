@@ -1,0 +1,133 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { X } from "@phosphor-icons/react";
+import { Reveal } from "@/components/primitives/Reveal";
+
+/**
+ * PENDING REAL ASSETS — see chat: this section needs real screenshots of
+ * sites/dashboards/games actually built with Imagine Sites (the same way
+ * deck.gallery covers stood in for the Presentation Maker's showcase).
+ * Placeholder cells are intentionally plain and labeled — never dressed up
+ * to look like a real screenshot.
+ *
+ * Layout is a loose overlapping fan (rotation + vertical offset per card)
+ * rather than a flat grid — deliberately different from the sibling AI
+ * Presentation Maker page's clean grid, echoing the tilted card-stack
+ * patterns from the reference inspiration folder. Clicking a card opens it
+ * larger in a lightbox; clicking the backdrop (or Escape) closes it.
+ */
+const CARDS = [
+  { label: "Example site 1", rotate: -6, y: 14 },
+  { label: "Example site 2", rotate: 3, y: -10 },
+  { label: "Example site 3", rotate: -2, y: 20 },
+  { label: "Example site 4", rotate: 5, y: -6 },
+  { label: "Example site 5", rotate: -4, y: 16 },
+  { label: "Example site 6", rotate: 4, y: -14 },
+];
+
+export function ShowcaseSection() {
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (activeIndex === null) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setActiveIndex(null);
+    };
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [activeIndex]);
+
+  return (
+    <section id="showcase" className="border-b border-border-primary bg-[#0a0a0a] relative overflow-hidden">
+      <div
+        aria-hidden="true"
+        className="absolute left-1/2 top-[60%] -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] rounded-full blur-[120px] opacity-[0.12] pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(circle, var(--color-accent) 0%, var(--color-accent-secondary) 55%, transparent 75%)",
+        }}
+      />
+
+      <div className="container-page py-20 md:py-28 relative">
+        <Reveal className="max-w-[640px] mb-14 md:mb-20">
+          <p className="font-mono text-[10.5px] font-semibold tracking-[1.8px] uppercase text-white/40 m-0">
+            Text to Website Builder
+          </p>
+          <h2
+            className="font-display font-semibold leading-[1.1] tracking-[-0.5px] mt-3.5 mb-4 text-white"
+            style={{ fontSize: "clamp(28px, 3.6vw, 44px)" }}
+          >
+            See what this AI website creator builds
+          </h2>
+          <p className="font-sans text-white/55 leading-[1.7] m-0" style={{ fontSize: "clamp(15px, 1.3vw, 18px)" }}>
+            Browse real sites, dashboards, and games built by people using
+            Imagine Sites — a faster way to see what&apos;s possible than
+            reading another feature list.
+          </p>
+        </Reveal>
+
+        <Reveal className="flex flex-wrap justify-center gap-x-2 gap-y-10 md:gap-x-0 py-6">
+          {CARDS.map((c, i) => (
+            <button
+              key={c.label}
+              type="button"
+              onClick={() => setActiveIndex(i)}
+              aria-label={`Open larger preview of ${c.label}`}
+              className="w-[42%] sm:w-[220px] md:-ml-6 first:ml-0 aspect-[4/3] rounded-lg border border-dashed border-white/15 bg-white/[0.04] backdrop-blur-sm flex items-center justify-center transition-transform duration-300 hover:scale-105 hover:z-10 cursor-pointer"
+              style={{
+                transform: `rotate(${c.rotate}deg) translateY(${c.y}px)`,
+                zIndex: i,
+              }}
+            >
+              <p className="font-mono text-[10.5px] text-white/30 text-center px-4">
+                Pending real asset — {c.label}
+              </p>
+            </button>
+          ))}
+        </Reveal>
+
+        <Reveal delay={80} className="mt-10 flex justify-center">
+          <a
+            href="https://www.imagine.art/sites"
+            className="font-sans text-[14px] font-medium text-white/70 hover:text-white transition-colors underline underline-offset-4 decoration-white/30"
+          >
+            More samples →
+          </a>
+        </Reveal>
+      </div>
+
+      {activeIndex !== null && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${CARDS[activeIndex].label} preview`}
+          onClick={() => setActiveIndex(null)}
+          className="fixed inset-0 z-[100] bg-black/85 backdrop-blur-sm flex items-center justify-center p-6 md:p-16"
+        >
+          <button
+            type="button"
+            onClick={() => setActiveIndex(null)}
+            aria-label="Close preview"
+            className="absolute top-5 right-5 md:top-8 md:right-8 flex items-center justify-center w-10 h-10 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors cursor-pointer"
+          >
+            <X size={18} weight="bold" />
+          </button>
+
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-[960px] aspect-video rounded-xl border border-white/15 bg-[#111] flex items-center justify-center"
+          >
+            <p className="font-mono text-[13px] text-white/40 text-center px-6">
+              Pending real asset — {CARDS[activeIndex].label}
+            </p>
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}

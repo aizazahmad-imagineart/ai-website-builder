@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Navbar (im-nav) — ImagineArt / Imagine Computer reference</title>
+<!--
+  Navbar — ImagineArt / Imagine Computer (current, monochrome).
+
+  Extracted from the live page (index.html). This is the real top bar:
+  a light nav that condenses into a dark glass pill on scroll, plus a
+  mobile slide-in menu (.im-menu). Monochrome only — no colored accent.
+
+  Notes when reusing:
+  - Asset/logo + font paths use the deployed "/imagine-computer/..." prefix;
+    repoint them to your project.
+  - Type is Google Sans Flex (see fonts/). A neutral fallback is set below.
+  - Links reflect the shipped targets (logo + Get Started -> imagine.art/computer,
+    Pricing -> imagine.art/subscription, in-page #features/#tools/#about/#faq).
+-->
+<style>
+/* Neutral standalone defaults (the live page provides Google Sans Flex) */
+*{box-sizing:border-box;}
+body{margin:0;font-family:"Google Sans Flex","Inter",ui-sans-serif,system-ui,sans-serif;color:#171717;-webkit-font-smoothing:antialiased;min-height:340px;background:linear-gradient(160deg,#14141f,#2a2438 70%,#3a2f2a);}
+
+/* ===== component styles (extracted verbatim from the live page) ===== */
+.im-nav,.im-nav *,.im-footer,.im-footer *{box-sizing:border-box;font-family:"Google Sans Flex","Inter",ui-sans-serif,system-ui,sans-serif;}
+/* ===== NAVBAR ===== */ .im-nav{position:fixed;top:0;left:0;right:0;z-index:9000;padding:16px 0;transition:padding .3s ease;}
+.im-nav.is-scrolled{padding:10px 0;}
+.im-nav__bar{margin:0 auto;display:flex;align-items:center;justify-content:space-between;max-width:100%;padding:10px clamp(40px,12vw,220px);border-radius:22px;border:1px solid transparent;background:transparent;transition:max-width .48s cubic-bezier(.22,1,.36,1),padding .48s cubic-bezier(.22,1,.36,1),background .48s cubic-bezier(.22,1,.36,1),border-color .48s cubic-bezier(.22,1,.36,1),box-shadow .48s cubic-bezier(.22,1,.36,1);}
+.im-nav.is-scrolled .im-nav__bar{max-width:min(1180px,calc(100vw - 32px));padding:8px 12px;background:rgba(10,10,11,.72);-webkit-backdrop-filter:blur(32px) saturate(180%);backdrop-filter:blur(32px) saturate(180%);box-shadow:0 20px 48px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.08),0 0 0 1px rgba(255,255,255,.1);}
+.im-nav__logo{display:inline-flex;align-items:center;flex-shrink:0;text-decoration:none;}
+/* Default (top) state sits over the dark hero, so the palette is light; it morphs into the dark glass pill on scroll (also light). */ .im-nav__logo img{height:22px;width:auto;transition:filter .3s;filter:brightness(0) invert(1);}
+.im-nav__links{display:none;align-items:center;gap:2px;}
+.im-nav__links a{padding:6px 14px;border-radius:8px;font-size:14px;font-weight:500;letter-spacing:.14px;white-space:nowrap;text-decoration:none;color:rgba(255,255,255,.78);transition:color .15s,background .15s;}
+.im-nav__links a:hover{color:#fff;background:rgba(255,255,255,.1);}
+.im-nav.is-scrolled .im-nav__links a{color:rgba(255,255,255,.7);}
+.im-nav.is-scrolled .im-nav__links a:hover{color:#fff;background:rgba(255,255,255,.08);}
+.im-nav__actions{display:none;align-items:center;gap:4px;flex-shrink:0;}
+.im-nav__cta{display:inline-flex;align-items:center;justify-content:center;height:34px;padding:0 16px;border-radius:10px;font-size:13.5px;font-weight:500;letter-spacing:.14px;text-decoration:none;background:#fff;color:rgb(10,10,11);box-shadow:0 2px 8px rgba(0,0,0,.18);transition:all .2s;}
+.im-nav.is-scrolled .im-nav__cta{background:#fff;color:rgb(10,10,11);box-shadow:0 2px 8px rgba(0,0,0,.2);}
+.im-nav__burger{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:10px;border:none;background:transparent;cursor:pointer;color:rgba(255,255,255,.85);transition:color .15s;}
+.im-nav.is-scrolled .im-nav__burger{color:rgba(255,255,255,.85);}
+.im-nav__burger span{display:flex;flex-direction:column;gap:5px;}
+.im-nav__burger span i{display:block;width:18px;height:1.5px;border-radius:2px;background:currentColor;transition:transform .25s;}
+@media(min-width:1024px){
+  .im-nav__links{display:flex;}
+  .im-nav__actions{display:flex;}
+  .im-nav__burger{display:none;}
+}
+/* mobile overlay */ .im-menu{position:fixed;inset:0;z-index:9100;background:#fff;display:none;flex-direction:column;}
+.im-menu.is-open{display:flex;animation:imMenuIn .22s cubic-bezier(.4,0,.2,1) forwards;}
+.im-menu__top{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;flex-shrink:0;}
+.im-menu__top img{height:22px;width:auto;}
+.im-menu__close{display:inline-flex;padding:4px;border:none;background:transparent;cursor:pointer;color:rgba(0,0,0,.6);}
+.im-menu__body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-bottom:40px;}
+.im-menu__links{display:flex;flex-direction:column;align-items:center;gap:4px;}
+.im-menu__links a{display:block;text-align:center;padding:10px 32px;border-radius:10px;font-size:22px;font-weight:300;letter-spacing:-.2px;text-decoration:none;color:rgba(0,0,0,.7);transition:color .15s;}
+.im-menu__rule{width:calc(100% - 48px);height:1px;background:rgba(0,0,0,.08);margin:16px 0;}
+.im-menu__cta{display:inline-flex;align-items:center;justify-content:center;height:44px;padding:0 24px;border-radius:14px;font-size:14px;font-weight:500;text-decoration:none;background:rgb(23,23,23);color:#fff;}
+</style>
+</head>
+<body>
+<header class="im-nav" data-im-nav>
+  <div class="im-nav__bar">
+    <a class="im-nav__logo" href="https://www.imagine.art/computer" data-allow-nav><img src="/imagine-computer/Guidelines/assets/imagine-art-wordmark.svg" alt="ImagineArt" width="144" height="22"></a>
+    <nav class="im-nav__links"><a href="#features">Features</a><a href="#tools">Tools</a><a href="#about">About</a><a href="#faq">FAQ</a><a href="https://www.imagine.art/subscription" target="_blank" rel="noopener noreferrer" data-allow-nav>Pricing</a></nav>
+    <div class="im-nav__actions"><a class="im-nav__cta" href="https://imagine.art/computer" data-allow-nav>Get Started</a></div>
+    <button class="im-nav__burger" type="button" aria-label="Open menu" data-im-burger><span><i></i><i></i></span></button>
+  </div>
+</header>
+<div class="im-menu" data-im-menu>
+  <div class="im-menu__top">
+    <a href="https://www.imagine.art/computer" data-allow-nav><img src="/imagine-computer/Guidelines/assets/imagine-art-wordmark.svg" alt="ImagineArt" width="144" height="22"></a>
+    <button class="im-menu__close" type="button" aria-label="Close menu" data-im-close><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 3l12 12M15 3L3 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+  </div>
+  <div class="im-menu__body">
+    <div class="im-menu__links"><a href="#features" data-im-close>Features</a><a href="#tools" data-im-close>Tools</a><a href="#about" data-im-close>About</a><a href="#faq" data-im-close>FAQ</a><a href="https://www.imagine.art/subscription" target="_blank" rel="noopener noreferrer" data-allow-nav data-im-close>Pricing</a></div>
+    <div class="im-menu__rule"></div>
+    <a class="im-menu__cta" href="https://imagine.art/computer" data-allow-nav data-im-close>Get Started</a>
+  </div>
+</div>
+<script>(function(){
+  var nav=document.querySelector('[data-im-nav]');
+  var menu=document.querySelector('[data-im-menu]');
+  function onScroll(){ if(window.scrollY>20){nav.classList.add('is-scrolled');}else{nav.classList.remove('is-scrolled');} }
+  window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
+  var burger=document.querySelector('[data-im-burger]');
+  if(burger){burger.addEventListener('click',function(){menu.classList.add('is-open');document.body.style.overflow='hidden';});}
+  document.querySelectorAll('[data-im-close]').forEach(function(el){el.addEventListener('click',function(){menu.classList.remove('is-open');document.body.style.overflow='';});});
+  // Links shouldn't redirect anywhere for now: neutralize anything that would
+  // leave the page (external URLs, downloads). In-page "#section" anchors still scroll.
+  document.querySelectorAll('a[href]').forEach(function(a){
+    var h=a.getAttribute('href')||'';
+    var inPage=(h.charAt(0)==='#'&&h.length>1);
+    if(a.hasAttribute('data-allow-nav'))return;
+    if(!inPage){
+      a.addEventListener('click',function(e){e.preventDefault();});
+      a.removeAttribute('target');
+    }
+  });
+})();</script>
+</body>
+</html>
