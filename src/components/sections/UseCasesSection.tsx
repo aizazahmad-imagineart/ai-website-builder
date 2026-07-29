@@ -52,7 +52,7 @@ export function UseCasesSection() {
           {BUILD_TYPES.map((bt, i) => (
             <Reveal key={bt.title} delay={i * 60}>
               <SpotlightCard className="h-full rounded-2xl">
-                <div className="h-full flex flex-col gap-4 rounded-2xl bg-white/[0.04] border border-white/[0.08] p-6 md:p-7 transition-colors duration-300 group-hover:bg-white/[0.07]">
+                <div className="h-full flex flex-col gap-4 rounded-2xl bg-white/[0.04] backdrop-blur-md backdrop-saturate-150 border border-white/[0.08] p-6 md:p-7 transition-colors duration-300 group-hover:bg-white/[0.07]">
                   <span className="flex items-center justify-center w-9 h-9 rounded-full bg-white/[0.08] text-white shrink-0">
                     {ICONS[bt.icon]}
                   </span>

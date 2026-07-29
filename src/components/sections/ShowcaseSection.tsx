@@ -1,15 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { X } from "@phosphor-icons/react";
 import { Reveal } from "@/components/primitives/Reveal";
 
 /**
- * PENDING REAL ASSETS — see chat: this section needs real screenshots of
- * sites/dashboards/games actually built with Imagine Sites (the same way
- * deck.gallery covers stood in for the Presentation Maker's showcase).
- * Placeholder cells are intentionally plain and labeled — never dressed up
- * to look like a real screenshot.
+ * Real, professionally designed site mockups — user-provided stand-ins
+ * (from "webpages placeholder images/") for actual Imagine Sites output,
+ * the same way deck.gallery covers stood in for the Presentation Maker's
+ * showcase before real generated decks existed. Swap the /public/showcase
+ * files for real Imagine Sites screenshots once they exist; until then,
+ * these are real designs, never a fabricated CSS mockup.
  *
  * Layout is a loose overlapping fan (rotation + vertical offset per card)
  * rather than a flat grid — deliberately different from the sibling AI
@@ -18,12 +20,14 @@ import { Reveal } from "@/components/primitives/Reveal";
  * larger in a lightbox; clicking the backdrop (or Escape) closes it.
  */
 const CARDS = [
-  { label: "Example site 1", rotate: -6, y: 14 },
-  { label: "Example site 2", rotate: 3, y: -10 },
-  { label: "Example site 3", rotate: -2, y: 20 },
-  { label: "Example site 4", rotate: 5, y: -6 },
-  { label: "Example site 5", rotate: -4, y: 16 },
-  { label: "Example site 6", rotate: 4, y: -14 },
+  { src: "/showcase/site-01-fuelx.png", rotate: -6, y: 14 },
+  { src: "/showcase/site-02-ozon.png", rotate: 3, y: -10 },
+  { src: "/showcase/site-03-billieduvalle.png", rotate: -2, y: 20 },
+  { src: "/showcase/site-04-poch.png", rotate: 5, y: -6 },
+  { src: "/showcase/site-05-janissne.png", rotate: -4, y: 16 },
+  { src: "/showcase/site-06-parallel.jpg", rotate: 4, y: -14 },
+  { src: "/showcase/site-07-dtxpro.png", rotate: -5, y: 10 },
+  { src: "/showcase/site-08-midlifeengineering.png", rotate: 2, y: -18 },
 ];
 
 export function ShowcaseSection() {
@@ -74,19 +78,23 @@ export function ShowcaseSection() {
         <Reveal className="flex flex-wrap justify-center gap-x-2 gap-y-10 md:gap-x-0 py-6">
           {CARDS.map((c, i) => (
             <button
-              key={c.label}
+              key={c.src}
               type="button"
               onClick={() => setActiveIndex(i)}
-              aria-label={`Open larger preview of ${c.label}`}
-              className="w-[42%] sm:w-[220px] md:-ml-6 first:ml-0 aspect-[4/3] rounded-lg border border-dashed border-white/15 bg-white/[0.04] backdrop-blur-sm flex items-center justify-center transition-transform duration-300 hover:scale-105 hover:z-10 cursor-pointer"
+              aria-label={`Open larger preview of example site ${i + 1}`}
+              className="relative w-[42%] sm:w-[220px] md:-ml-6 first:ml-0 aspect-video rounded-lg overflow-hidden border border-white/15 shadow-[0_20px_48px_rgba(0,0,0,0.35)] transition-transform duration-300 hover:scale-105 hover:z-10 cursor-pointer"
               style={{
                 transform: `rotate(${c.rotate}deg) translateY(${c.y}px)`,
                 zIndex: i,
               }}
             >
-              <p className="font-mono text-[10.5px] text-white/30 text-center px-4">
-                Pending real asset — {c.label}
-              </p>
+              <Image
+                src={c.src}
+                alt=""
+                fill
+                sizes="(min-width: 768px) 220px, 42vw"
+                className="object-cover"
+              />
             </button>
           ))}
         </Reveal>
@@ -105,7 +113,7 @@ export function ShowcaseSection() {
         <div
           role="dialog"
           aria-modal="true"
-          aria-label={`${CARDS[activeIndex].label} preview`}
+          aria-label={`Example site ${activeIndex + 1} preview`}
           onClick={() => setActiveIndex(null)}
           className="fixed inset-0 z-[100] bg-black/85 backdrop-blur-sm flex items-center justify-center p-6 md:p-16"
         >
@@ -120,11 +128,15 @@ export function ShowcaseSection() {
 
           <div
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-[960px] aspect-video rounded-xl border border-white/15 bg-[#111] flex items-center justify-center"
+            className="relative w-full max-w-[960px] aspect-video rounded-xl overflow-hidden border border-white/15 bg-[#111]"
           >
-            <p className="font-mono text-[13px] text-white/40 text-center px-6">
-              Pending real asset — {CARDS[activeIndex].label}
-            </p>
+            <Image
+              src={CARDS[activeIndex].src}
+              alt=""
+              fill
+              sizes="960px"
+              className="object-cover"
+            />
           </div>
         </div>
       )}

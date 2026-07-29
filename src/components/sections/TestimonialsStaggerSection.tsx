@@ -29,11 +29,13 @@ function Card({
   onSelect: () => void;
 }) {
   const active = position === 0;
+  const distance = Math.abs(position);
+  const opacity = active ? 1 : Math.max(0, 1 - distance * 0.32);
 
   return (
     <div
       onClick={active ? undefined : onSelect}
-      className={`absolute left-1/2 top-1/2 border p-8 transition-[transform,box-shadow,border-color,background-color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+      className={`absolute left-1/2 top-1/2 border p-8 transition-[transform,opacity,box-shadow,border-color,background-color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
         active
           ? "z-10 bg-content-primary border-content-primary"
           : "z-0 bg-white border-border-primary cursor-pointer hover:border-border-secondary hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)]"
@@ -41,6 +43,8 @@ function Card({
       style={{
         width: size,
         minHeight: size,
+        opacity,
+        pointerEvents: opacity < 0.1 ? "none" : undefined,
         clipPath:
           "polygon(50px 0%, calc(100% - 50px) 0%, 100% 50px, 100% 100%, calc(100% - 50px) 100%, 50px 100%, 0 100%, 0 0)",
         transform: `

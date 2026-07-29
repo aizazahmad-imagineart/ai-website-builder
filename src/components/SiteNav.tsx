@@ -28,9 +28,13 @@ export function SiteNav() {
     return () => { document.body.style.overflow = ""; };
   }, [menuOpen]);
 
-  const linkColor      = scrolled ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.65)";
-  const linkColorHover = scrolled ? "#fff" : "rgb(23,23,23)";
-  const linkBgHover    = scrolled ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.05)";
+  // This page opens on a dark hero (unlike the light-hero sibling pages this
+  // component was copied from), so nav text/logo/button stay in their
+  // "light" styling at all times — only the pill's own background/blur
+  // still morphs on scroll.
+  const linkColor      = "rgba(255,255,255,0.7)";
+  const linkColorHover = "#fff";
+  const linkBgHover    = "rgba(255,255,255,0.08)";
 
   return (
     <>
@@ -58,8 +62,8 @@ export function SiteNav() {
               alt="ImagineArt"
               width={144}
               height={22}
-              className="h-[22px] w-auto transition-[filter] duration-300"
-              style={{ filter: scrolled ? "brightness(0) invert(1)" : "none" }}
+              className="h-[22px] w-auto"
+              style={{ filter: "brightness(0) invert(1)" }}
             />
           </Link>
 
@@ -86,9 +90,9 @@ export function SiteNav() {
               href="https://www.imagine.art/sites"
               className="inline-flex items-center justify-center h-[34px] px-[16px] rounded-[22px] font-sans text-[13.5px] font-medium tracking-[0.14px] transition-all duration-200"
               style={{
-                background: scrolled ? "#fff" : "rgb(23,23,23)",
-                color: scrolled ? "rgb(10,10,11)" : "#fff",
-                boxShadow: scrolled ? "0 2px 8px rgba(0,0,0,0.2)" : "none",
+                background: "#fff",
+                color: "rgb(10,10,11)",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
               }}
             >
               Get Started
@@ -99,7 +103,7 @@ export function SiteNav() {
           <button
             onClick={() => setMenuOpen((o) => !o)}
             className="lg:hidden flex items-center justify-center w-[38px] h-[38px] rounded-[10px] border-none cursor-pointer transition-colors duration-150"
-            style={{ background: "transparent", color: scrolled ? "rgba(255,255,255,0.85)" : "rgb(23,23,23)" }}
+            style={{ background: "transparent", color: "rgba(255,255,255,0.85)" }}
             aria-label="Open menu"
           >
             <span className="flex flex-col gap-[5px]">

@@ -127,6 +127,12 @@
     animation: marquee 38s linear infinite;
   }
 
+  /* Slow gradient drift behind the hero's giant wordmark */
+  .animate-wordmark-shift {
+    background-size: 240% 240%;
+    animation: wordmark-shift 16s ease-in-out infinite;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .reveal,
     .reveal-visible {
@@ -135,7 +141,8 @@
       filter: none;
       transition: none;
     }
-    .animate-marquee {
+    .animate-marquee,
+    .animate-wordmark-shift {
       animation: none;
     }
   }
@@ -144,6 +151,11 @@
 @keyframes marquee {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
+}
+
+@keyframes wordmark-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
 }
 
 @keyframes mobileMenuIn {
