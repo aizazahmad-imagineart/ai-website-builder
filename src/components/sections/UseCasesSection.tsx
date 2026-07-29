@@ -93,7 +93,11 @@ export function UseCasesSection() {
           </p>
         </Reveal>
 
-        <div className="grid md:grid-cols-2 gap-x-16">
+        {/* 30/70 split — the sticky visual (this section's whole reason for
+            being the heavier-visual sibling of How It Works) gets the
+            majority share, capped below so it doesn't just keep growing on
+            ultra-wide screens. */}
+        <div className="grid md:grid-cols-[3fr_7fr] gap-x-10 lg:gap-x-16">
           {/* Rows — normal document flow, each tall enough to trigger the observer cleanly */}
           <div className="flex flex-col">
             {BUILD_TYPES.map((bt, i) => {
@@ -136,7 +140,7 @@ export function UseCasesSection() {
               while pinned, swapping icon + label as the active row changes */}
           <div className="hidden md:block relative">
             <div className="sticky top-0 h-screen flex items-center">
-              <div className="w-full aspect-video rounded-xl border border-dashed border-white/15 bg-white/[0.03] backdrop-blur-sm overflow-hidden flex flex-col items-center justify-center gap-4 text-white/30 transition-colors duration-500">
+              <div className="w-full max-w-[900px] mx-auto aspect-video rounded-xl border border-dashed border-white/15 bg-white/[0.03] backdrop-blur-sm overflow-hidden flex flex-col items-center justify-center gap-4 text-white/30 transition-colors duration-500">
                 <ActiveIcon size={56} weight="regular" />
                 <p className="font-mono text-[12px] text-center px-6 transition-opacity duration-300">
                   Pending real asset — {BUILD_TYPES[active].title}
