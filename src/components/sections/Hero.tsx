@@ -1,10 +1,25 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { ArrowDown, Sparkle, UploadSimple } from "@phosphor-icons/react";
 import { Reveal } from "@/components/primitives/Reveal";
 import { AnimatedGradientBackground } from "@/components/primitives/AnimatedGradientBackground";
 import { ButtonLink } from "@/components/Button";
+
+/** Placeholder stand-ins — see chat: real example-site screenshots, same
+ * set already used in ShowcaseSection, reused here for a different visual
+ * treatment (a trailing hover effect instead of a static fan). */
+const TRAIL_IMAGES = [
+  "/showcase/site-01-fuelx.png",
+  "/showcase/site-02-ozon.png",
+  "/showcase/site-03-billieduvalle.png",
+  "/showcase/site-04-poch.png",
+  "/showcase/site-05-janissne.png",
+  "/showcase/site-06-parallel.jpg",
+  "/showcase/site-07-dtxpro.png",
+  "/showcase/site-08-midlifeengineering.png",
+];
 
 /** Example prompts cycled as an animated typed hint inside the (empty)
  * input — every competitor in this space leads with a prompt box, so it
@@ -25,8 +40,10 @@ function useTypedHint(examples: string[], enabled: boolean) {
     if (!enabled) return;
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setText(examples[0]);
-      return;
+      // Deferred like every other setText call below — a synchronous
+      // setState directly in an effect body triggers cascading renders.
+      const id = setTimeout(() => setText(examples[0]), 0);
+      return () => clearTimeout(id);
     }
 
     let cancelled = false;
@@ -96,12 +113,76 @@ export function Hero() {
   const generateHref = `https://www.imagine.art/sites${prompt.trim() ? `?prompt=${encodeURIComponent(prompt.trim())}` : ""}`;
   const typedHint = useTypedHint(PROMPT_EXAMPLES, prompt.length === 0);
 
+  // Image mouse trail — all refs created and consumed locally in this one
+  // component (same pattern as ComparisonSection's dial refs elsewhere on
+  // this page), rather than returned from a shared hook, so nothing crosses
+  // a component boundary as a plain ref-holding prop.
+  const trailContainerRef = useRef<HTMLDivElement>(null);
+  const trailItemRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const promptBoxRef = useRef<HTMLDivElement>(null);
+  const trailState = useRef({ index: 0, lastX: 0, lastY: 0 });
+
+  const handleTrailMove = (clientX: number, clientY: number) => {
+    const container = trailContainerRef.current;
+    if (!container) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    // Never trail over the prompt box itself — it briefly covered the input
+    // otherwise. A little padding around the real rect keeps a comfortable
+    // dead zone rather than an exact pixel edge.
+    const box = promptBoxRef.current?.getBoundingClientRect();
+    const PADDING = 20;
+    if (
+      box &&
+      clientX > box.left - PADDING &&
+      clientX < box.right + PADDING &&
+      clientY > box.top - PADDING &&
+      clientY < box.bottom + PADDING
+    ) {
+      trailItemRefs.current.forEach((el) => {
+        if (el) el.dataset.status = "inactive";
+      });
+      trailState.current.lastX = clientX;
+      trailState.current.lastY = clientY;
+      return;
+    }
+
+    const distance = Math.hypot(clientX - trailState.current.lastX, clientY - trailState.current.lastY);
+    if (distance < window.innerWidth / 20) return;
+
+    const rect = container.getBoundingClientRect();
+    const i = trailState.current.index;
+    const lead = trailItemRefs.current[i % TRAIL_IMAGES.length];
+    const tail = trailItemRefs.current[(i - 5) % TRAIL_IMAGES.length];
+
+    if (lead) {
+      lead.style.left = `${clientX - rect.left}px`;
+      lead.style.top = `${clientY - rect.top}px`;
+      lead.style.zIndex = String((i % TRAIL_IMAGES.length) + 1);
+      lead.dataset.status = "active";
+      window.setTimeout(() => {
+        lead.dataset.status = "inactive";
+      }, 1000);
+    }
+    if (tail && tail !== lead) tail.dataset.status = "inactive";
+
+    trailState.current = { index: i + 1, lastX: clientX, lastY: clientY };
+  };
+
   return (
     <>
       {/* Pin wrapper — 100vh taller than the sticky hero, giving it that
           much extra scroll room before it releases. */}
       <div className="relative h-[200vh]">
-        <div className="sticky top-0 h-screen overflow-hidden bg-[#0a0a0a]">
+        <div
+          ref={trailContainerRef}
+          onMouseMove={(e) => handleTrailMove(e.clientX, e.clientY)}
+          onTouchMove={(e) => {
+            const touch = e.touches[0];
+            if (touch) handleTrailMove(touch.clientX, touch.clientY);
+          }}
+          className="sticky top-0 h-screen overflow-hidden bg-[#0a0a0a]"
+        >
           {/* Grain texture */}
           <div
             aria-hidden="true"
@@ -132,6 +213,28 @@ export function Hero() {
             </span>
           </div>
 
+          {/* Mouse/touch trail of example-site thumbnails — sits above the
+              wordmark but below the real foreground UI (z-20), and is
+              actively suppressed near the prompt box (see handleTrailMove)
+              so it never visually blocks it. The mousemove/touchmove
+              listener lives on this div's parent (above), not here, since a
+              lower-z-index layer never receives pointer events that land on
+              a higher one — only a shared ancestor does. */}
+          <div aria-hidden="true" className="absolute inset-0 pointer-events-none z-[15]">
+            {TRAIL_IMAGES.map((src, i) => (
+              <div
+                key={src}
+                ref={(el) => {
+                  trailItemRefs.current[i] = el;
+                }}
+                data-status="inactive"
+                className="absolute w-36 sm:w-44 md:w-52 aspect-video -translate-x-1/2 -translate-y-1/2 scale-0 opacity-0 data-[status='active']:scale-100 data-[status='active']:opacity-100 transition-[transform,opacity] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] rounded-lg overflow-hidden border border-white/15 shadow-[0_20px_48px_rgba(0,0,0,0.45)]"
+              >
+                <Image src={src} alt="" fill sizes="208px" className="object-cover" />
+              </div>
+            ))}
+          </div>
+
           {/* Foreground content */}
           <div className="relative z-20 container-page h-full flex flex-col pt-[100px] md:pt-[120px] pb-8">
             <div className="flex-1 flex flex-col items-center justify-center text-center">
@@ -148,6 +251,7 @@ export function Hero() {
                 </h1>
 
                 <div
+                  ref={promptBoxRef}
                   className="mt-8 w-full flex items-center gap-2.5 rounded-2xl border border-white/20 bg-white/[0.08] backdrop-blur-md shadow-[0_20px_60px_rgba(0,0,0,0.35)] p-3 pl-6 cursor-text transition-colors focus-within:border-white/35"
                   onClick={() => inputRef.current?.focus()}
                 >
