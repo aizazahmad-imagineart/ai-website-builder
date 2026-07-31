@@ -21,9 +21,17 @@ const instrumentSerif = Instrument_Serif({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.imagine.art"),
   title: "Imagine Sites – Free AI Website Builder That Creates and Deploys in Minutes",
   description:
     "Describe your idea and Imagine Computer's AI website builder does the rest. A no-code website builder for sites, landing pages, dashboards, and more. Start free.",
+  alternates: {
+    canonical: "/imagine-computer/ai-website-builder",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({

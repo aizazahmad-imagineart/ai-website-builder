@@ -34,19 +34,21 @@ function FaqRow({ q, a, delay, defaultOpen = false }: { q: string; a: string; de
 
   return (
     <Reveal delay={delay} className="border-b border-border-primary">
-      <button
-        onClick={() => setOpen((v) => !v)}
-        className="w-full flex items-start justify-between gap-8 py-6 text-left cursor-pointer group"
-        aria-expanded={open}
-      >
-        <span
-          className="font-sans font-medium leading-snug text-content-primary"
-          style={{ fontSize: "clamp(16px, 1.4vw, 19px)" }}
+      <h3 className="m-0">
+        <button
+          onClick={() => setOpen((v) => !v)}
+          className="w-full flex items-start justify-between gap-8 py-6 text-left cursor-pointer group"
+          aria-expanded={open}
         >
-          {q}
-        </span>
-        <PlusMinus open={open} />
-      </button>
+          <span
+            className="font-sans font-medium leading-snug text-content-primary"
+            style={{ fontSize: "clamp(16px, 1.4vw, 19px)" }}
+          >
+            {q}
+          </span>
+          <PlusMinus open={open} />
+        </button>
+      </h3>
 
       <div
         style={{

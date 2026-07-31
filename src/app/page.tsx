@@ -16,10 +16,10 @@ export default function Home() {
       <SiteNav />
       <main className="flex-1">
         <Hero />
-        <ComparisonSection />
-        <ShowcaseSection />
         <HowItWorks />
+        <ShowcaseSection />
         <FeaturesSection />
+        <ComparisonSection />
         <UseCasesSection />
         <TestimonialsStaggerSection />
         <FaqSection />

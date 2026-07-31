@@ -12,20 +12,20 @@ import { SpotlightCard } from "@/components/primitives/SpotlightCard";
  */
 const STEPS: { title: string; body: string }[] = [
   {
-    title: "Describe your site",
-    body: "Just say what you're building — \"a modern portfolio for a photographer\" or \"an online store for handmade candles.\" The AI site generator gets to work.",
+    title: "Describe Your Site in Natural Language",
+    body: "Just say what you're building. \"A modern portfolio for a photographer\" or \"an online store for handmade candles.\" Imagine Computer's AI site generator gets to work.",
   },
   {
-    title: "Customize without code",
-    body: "Ask for changes the same way you asked for the first draft. Move a section, swap a color, rewrite a headline — Imagine Sites responds to instructions, not menus.",
+    title: "Customize Without Touching Code",
+    body: "Ask for changes the same way you asked for the first draft. Move a section, swap a color, rewrite a headline. Imagine Sites responds to instructions, not menus.",
   },
   {
-    title: "Preview instantly",
-    body: "See exactly what visitors will see in a live preview window before anything goes live, and make adjustments as you go.",
+    title: "Preview Instantly",
+    body: "See exactly what visitors will see, in a live preview window, before anything goes live. Get a feel of your websites and make adjustments.",
   },
   {
-    title: "Deploy in one click",
-    body: "Deploy your finished site on Vercel with one click. Every site is shareable and production-ready in seconds.",
+    title: "Deploy in One Click",
+    body: "Deploy your finished site on Vercel with one click. Every website is shareable and production-ready in seconds.",
   },
 ];
 
@@ -41,10 +41,10 @@ export function HowItWorks() {
             className="font-display font-semibold leading-[1.1] tracking-[-0.5px] mt-3.5 mb-4 text-content-primary"
             style={{ fontSize: "clamp(28px, 3.6vw, 44px)" }}
           >
-            From idea to live website in <span className="font-serif-accent italic font-normal">minutes</span>
+            How Our No-code AI Website Generator Works
           </h2>
           <p className="font-sans text-content-secondary leading-[1.7] m-0" style={{ fontSize: "clamp(15px, 1.3vw, 18px)" }}>
-            At its core, Imagine Sites is a prompt-based website builder — describe
+            At its core, Imagine Sites is a prompt based website builder. Describe
             what you want in plain English, and the AI handles the layout, the
             copy, and the styling in the background.
           </p>

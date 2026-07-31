@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { ArrowDown, Sparkle, UploadSimple } from "@phosphor-icons/react";
+import { ArrowDown, Sparkle, UploadSimple, X } from "@phosphor-icons/react";
 import { Reveal } from "@/components/primitives/Reveal";
 import { AnimatedGradientBackground } from "@/components/primitives/AnimatedGradientBackground";
 import { ButtonLink } from "@/components/Button";
@@ -112,6 +112,9 @@ export function Hero() {
   const inputRef = useRef<HTMLInputElement>(null);
   const generateHref = `https://www.imagine.art/sites${prompt.trim() ? `?prompt=${encodeURIComponent(prompt.trim())}` : ""}`;
   const typedHint = useTypedHint(PROMPT_EXAMPLES, prompt.length === 0);
+
+  const [attachedFile, setAttachedFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Image mouse trail — all refs created and consumed locally in this one
   // component (same pattern as ComparisonSection's dial refs elsewhere on
@@ -238,7 +241,7 @@ export function Hero() {
           {/* Foreground content */}
           <div className="relative z-20 container-page h-full flex flex-col pt-[100px] md:pt-[120px] pb-8">
             <div className="flex-1 flex flex-col items-center justify-center text-center">
-              <Reveal className="w-full max-w-[620px] flex flex-col items-center">
+              <Reveal className="w-full max-w-[700px] flex flex-col items-center">
                 <span className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-[7px] text-[13px] font-medium text-white/60 mb-6">
                   <Sparkle size={14} weight="fill" className="text-accent" />
                   Describe it in plain English. Watch it appear in seconds.
@@ -249,7 +252,7 @@ export function Hero() {
                 >
                   The AI Website Builder That Builds Everything
                 </h1>
-                <p className="mt-4 text-[15px] leading-[1.5] text-white/50 max-w-[520px]">
+                <p className="mt-4 text-[15px] leading-[1.5] text-white/50">
                   Type what you want, and{" "}
                   <a
                     href="https://www.imagine.art/imagine-computer"
@@ -266,7 +269,41 @@ export function Hero() {
                   className="mt-8 w-full flex items-center gap-2.5 rounded-2xl border border-white/20 bg-white/[0.08] backdrop-blur-md shadow-[0_20px_60px_rgba(0,0,0,0.35)] p-3 pl-6 cursor-text transition-colors focus-within:border-white/35"
                   onClick={() => inputRef.current?.focus()}
                 >
-                  <UploadSimple size={19} weight="regular" className="text-white/40 shrink-0" />
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      fileInputRef.current?.click();
+                    }}
+                    aria-label="Attach a reference file"
+                    className="shrink-0 text-white/40 hover:text-white/70 transition-colors cursor-pointer"
+                  >
+                    <UploadSimple size={19} weight="regular" />
+                  </button>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*,.pdf"
+                    onChange={(e) => setAttachedFile(e.target.files?.[0] ?? null)}
+                    className="hidden"
+                  />
+                  {attachedFile && (
+                    <span className="flex items-center gap-1.5 max-w-[140px] shrink-0 rounded-full bg-white/10 pl-2.5 pr-1.5 py-1 text-[12px] text-white/70">
+                      <span className="truncate">{attachedFile.name}</span>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setAttachedFile(null);
+                          if (fileInputRef.current) fileInputRef.current.value = "";
+                        }}
+                        aria-label="Remove attached file"
+                        className="shrink-0 text-white/40 hover:text-white cursor-pointer"
+                      >
+                        <X size={11} weight="bold" />
+                      </button>
+                    </span>
+                  )}
                   <input
                     ref={inputRef}
                     type="text"

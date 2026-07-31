@@ -70,7 +70,7 @@ export function ShowcaseSection() {
           </h2>
           <p className="font-sans text-white/55 leading-[1.7] m-0" style={{ fontSize: "clamp(15px, 1.3vw, 18px)" }}>
             Browse real sites, dashboards, and games built by people using
-            Imagine Sites — a faster way to see what&apos;s possible than
+            Imagine Sites, a faster way to see what&apos;s possible than
             reading another feature list.
           </p>
         </Reveal>
