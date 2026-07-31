@@ -249,6 +249,17 @@ export function Hero() {
                 >
                   The AI Website Builder That Builds Everything
                 </h1>
+                <p className="mt-4 text-[15px] leading-[1.5] text-white/50 max-w-[520px]">
+                  Type what you want, and{" "}
+                  <a
+                    href="https://www.imagine.art/imagine-computer"
+                    className="text-white/70 underline underline-offset-2 hover:text-white transition-colors"
+                  >
+                    Imagine Computer
+                  </a>
+                  &apos;s AI website builder turns it into a real, working site. No code required.
+                  Describe what you want using natural language, and watch it appear in seconds.
+                </p>
 
                 <div
                   ref={promptBoxRef}
